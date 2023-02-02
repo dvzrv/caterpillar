@@ -1,0 +1,7 @@
+# SPDX-FileCopyrightText: 2023 David Runge <dave@sleepmap.de>
+# SPDX-License-Identifier: CC0-1.0
+
+/.cargo
+/target
+/Cargo.lock
+**/*.rs.bk

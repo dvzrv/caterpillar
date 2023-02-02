@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: 2023 David Runge <dave@sleepmap.de>
+# SPDX-License-Identifier: CC0-1.0
+
+branch_whitelist = [ "main" ]
+ignore_merge_commits = true
+
+pre_bump_hooks = [
+  "./.ci/check.sh",
+  "cargo deny check",
+  "cargo set-version {{version}}"
+]
+
+post_bump_hooks = [
+    "git push",
+    "git push origin {{version}}",
+    "cargo package",
+    "cargo publish"
+]
+
+[changelog]
+path = "CHANGELOG.md"

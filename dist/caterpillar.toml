@@ -1,0 +1,7 @@
+# SPDX-FileCopyrightText: 2023 David Runge <dave@sleepmap.de>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
+bundle_extension = "raucb"
+device_regex = "^/org/freedesktop/UDisks2/block_devices/sd[a-z]{1}[1-9]{1}[0-9]*?$"
+override_dir = "override"
+reboot = true

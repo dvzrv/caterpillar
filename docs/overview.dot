@@ -1,0 +1,70 @@
+digraph {
+    node [shape="box3d"; style="filled"];
+
+    subgraph cluster_2 {
+        label = "RAUC";
+        color = blue;
+        "Install bundle" [shape="diamond"];
+        "Test bundle" [shape="diamond"];
+    }
+
+    subgraph cluster_3 {
+        label = "Udisks2";
+        color = purple;
+        "Provide block devices" [shape="diamond"];
+        "Mount block device" [shape="diamond"];
+        "Unmount block device" [shape="diamond"];
+    }
+
+    subgraph cluster_0 {
+        label = "Caterpillar";
+        color = green;
+
+        subgraph cluster_4 {
+            label = "Block devices";
+            "Block devices";
+            "Request mount" [shape="diamond"];
+            "Request block devices" [shape="diamond"];
+            subgraph cluster_5 {
+                label = "Filesystems";
+                "Find bundles" [shape="diamond"];
+                "Mount points" [shape="folder"];
+
+                subgraph cluster_6 {
+                    label = "Bundles";
+                    "Request install bundle" [shape="diamond"];
+                    "Request test bundle" [shape="diamond"];
+                    "Compatible bundles" [shape="cylinder"];
+                    "Available bundles" [shape="cylinder"];
+                }
+            }
+        }
+    }
+
+    subgraph cluster_1 {
+        label = "System";
+        color = gray;
+        "Reboot" [shape="diamond"];
+        "Boot continues" [shape="diamond"];
+    }
+
+    "Request block devices" -> "Provide block devices";
+    "Provide block devices" -> "Block devices";
+    "Block devices" -> "Request mount";
+    "Block devices" -> "Boot continues" [label="no block devices"];
+    "Request mount" -> "Mount block device";
+    "Mount block device" -> "Mount points";
+    "Mount points" -> "Find bundles";
+    "Mount points" -> "Boot continues" [label="no mount points"];
+    "Find bundles" -> "Available bundles";
+    "Available bundles" -> "Request test bundle";
+    "Available bundles" -> "Boot continues" [label="no available bundles"];
+    "Available bundles" -> "Unmount block device" [label="no available bundles"];
+    "Request test bundle" -> "Test bundle";
+    "Test bundle" -> "Compatible bundles";
+    "Compatible bundles" -> "Request install bundle";
+    "Compatible bundles" -> "Boot continues" [label="no compatible bundles"];
+    "Compatible bundles" -> "Unmount block device" [label="no compatible bundles"];
+    "Request install bundle" -> "Install bundle";
+    "Install bundle" -> "Reboot";
+}

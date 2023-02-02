@@ -1,0 +1,12 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Caterpillar
+Upstream-Contact: David Runge <dave@sleepmap.de>
+Source: https://github.com/dvzrv/caterpillar
+
+Files: Cargo.lock
+Copyright: 2023 David Runge <dave@sleepmap.de>
+License: CC0-1.0
+
+Files: docs/overview.dot docs/overview.svg
+Copyright: 2023 David Runge <dave@sleepmap.de>
+License: CC-BY-SA-4.0
