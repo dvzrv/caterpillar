@@ -1,0 +1,87 @@
+# SPDX-FileCopyrightText: 2023 David Runge <dave@sleepmap.de>
+# SPDX-License-Identifier: CC0-1.0
+
+stages:
+  - check
+  - build
+  - test
+  - pages
+  - publish
+
+variables:
+  CARGO_HOME: "${CI_PROJECT_DIR}/.cargo"
+
+default:
+  before_script:
+    - pacman -Sy --needed --noconfirm archlinux-keyring
+    - pacman -Syu --needed --noconfirm cargo-deny cargo-edit clang cocogitto codespell dbus git mold pkgconf reuse rust
+  interruptible: true
+
+clippy:
+  stage: check
+  needs: []
+  script:
+    - cargo clippy --all -- -D warnings
+
+codespell:
+  stage: check
+  needs: []
+  script:
+    - codespell
+
+conventional_commits:
+  stage: check
+  needs: []
+  script:
+    - cog check
+
+fmt:
+  stage: check
+  needs: []
+  script:
+    - cargo fmt -- --check
+
+msrv:
+  stage: check
+  before_script:
+    - pacman -Sy --needed --noconfirm archlinux-keyring
+    - pacman -Syu --needed --noconfirm cargo-msrv clang dbus git mold pkgconf rustup
+    - rustup toolchain install nightly
+  needs: []
+  script:
+    - cargo msrv list
+    - cargo +nightly check -Zdirect-minimal-versions
+
+reuse:
+  stage: check
+  needs: []
+  script:
+    - reuse lint
+
+build:
+  stage: build
+  needs:
+    - clippy
+    - codespell
+    - conventional_commits
+    - fmt
+  artifacts:
+    paths:
+      - target
+    expire_in: 1 day
+  script:
+    - cargo build --release
+
+test:
+  stage: test
+  needs:
+    - build
+  script:
+    - cargo test --release
+
+deny:
+  stage: test
+  needs:
+    - build
+  script:
+    - cargo deny check
