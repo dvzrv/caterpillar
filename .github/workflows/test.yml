@@ -1,0 +1,85 @@
+# SPDX-FileCopyrightText: 2023 David Runge <dave@sleepmap.de>
+# SPDX-License-Identifier: CC0-1.0
+
+name: General tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          pacman -Sy --needed --noconfirm archlinux-keyring
+          pacman -Syu --needed --noconfirm clang codespell dbus git mold pkgconf rauc reuse rust
+      - name: Run clippy
+        run: cargo clippy --all -- -D warnings
+      - name: Run cargo fmt check
+        run: cargo fmt -- --check
+      - name: Run codespell
+        run: codespell
+  reuse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: REUSE Compliance Check
+        uses: fsfe/reuse-action@v2
+  msrv:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          pacman -Sy --needed --noconfirm archlinux-keyring
+          pacman -Syu --needed --noconfirm cargo-msrv clang dbus git mold pkgconf rustup
+      - name: Check MSRV
+        run: |
+          rustup toolchain install nightly
+          cargo msrv list
+          cargo +nightly check -Zdirect-minimal-versions
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          pacman -Sy --needed --noconfirm archlinux-keyring
+          pacman -Syu --needed --noconfirm clang dbus git mold pkgconf rust
+      - name: Run cargo build
+        run: cargo build --release
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          pacman -Sy --needed --noconfirm archlinux-keyring
+          pacman -Syu --needed --noconfirm clang dbus git mold pkgconf rust
+      - name: Run cargo test
+        run: cargo test --release
+  deny:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          pacman -Sy --needed --noconfirm archlinux-keyring
+          pacman -Syu --needed --noconfirm cargo-deny clang dbus git mold pkgconf rust
+      - name: Run cargo deny
+        run: cargo deny check
