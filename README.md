@@ -5,7 +5,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # caterpillar
 
-A tool for the detection and installation of RAUC update bundles found on attached block devices.
+A tool for the detection and installation of [RAUC](https://rauc.readthedocs.io/en/latest/) update bundles found on attached block devices.
+RAUC is a way to update firmware on embedded devices.
 
 Caterpillar makes use of [dbus](https://gitlab.freedesktop.org/dbus/dbus) to communicate with
 * [udisks2](https://github.com/storaged-project/udisks/) (for enumeration and (un)mounting of block devices)
