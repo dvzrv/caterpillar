@@ -254,9 +254,13 @@ impl RaucInfo {
                     let slot_primary = slot_name == primary;
 
                     // if this slot is the primary and has a version, expose it as the system version
-                    if slot_primary && slot_version.is_some() {
-                        system_version = slot_version.clone();
-                    }
+                    system_version = if (slot_primary && slot_version.is_some())
+                        || (slot_name == boot_slot && slot_version.is_some())
+                    {
+                        slot_version.clone()
+                    } else {
+                        None
+                    };
 
                     slots.push(Slot::new(
                         slot_primary,
