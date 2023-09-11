@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: 2023 David Runge <dave@sleepmap.de>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
+[Unit]
+After=evaluate-tests.service mnt.mount
+ConditionFileIsExecutable=/mnt/caterpillar
+ConditionCredential=test_environment
+Description=Update system with updates found on attached block devices
+OnFailure=reevaluate-tests.service
+OnSuccess=reevaluate-tests.service
+Wants=evaluate-tests.service mnt.mount
+
+[Service]
+ExecStart=/mnt/caterpillar
+
+[Install]
+WantedBy=multi-user.target

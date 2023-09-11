@@ -70,7 +70,7 @@ jobs:
           pacman -Sy --needed --noconfirm archlinux-keyring
           pacman -Syu --needed --noconfirm clang dbus git mold pkgconf rust
       - name: Run cargo test
-        run: cargo test --release
+        run: cargo test --release -- --skip integration
   deny:
     runs-on: ubuntu-latest
     container:

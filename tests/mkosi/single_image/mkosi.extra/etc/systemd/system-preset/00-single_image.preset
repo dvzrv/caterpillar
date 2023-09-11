@@ -1,0 +1,7 @@
+# SPDX-FileCopyrightText: 2023 David Runge <dave@sleepmap.de>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
+enable efibootmgr-init.service
+enable getty@tty1.service
+enable sshd.service
+disable archlinux-keyring-wkd-sync.timer

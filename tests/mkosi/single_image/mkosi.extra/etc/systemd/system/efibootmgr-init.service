@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: 2023 David Runge <dave@sleepmap.de>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
+[Unit]
+Description=Add EFI boot entries for A/B image
+ConditionCredential=set_efi_boot_entries
+ConditionPathExists=/dev/sdb1
+ConditionPathExists=/dev/sdb2
+ConditionPathExists=/dev/sdb3
+ConditionPathExists=/dev/sdb4
+ConditionPathExists=/dev/sdb5
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/mount /dev/sdb2 /mnt
+ExecStart=bash -c 'echo "root=PARTUUID=$(blkid --output value --match-tag PARTUUID /dev/sdb5) console=ttyS0 systemd.tty.term.console=xterm-256color systemd.tty.columns.console=159 systemd.tty.rows.console=84 systemd.tty.term.ttyS0=xterm-256color systemd.tty.columns.ttyS0=159 systemd.tty.rows.ttyS0=84 rw" | iconv -f ascii -t ucs2 > /tmp/sdb3.txt; efibootmgr --create --disk /dev/sdb --part 3 --loader /EFI/Linux/linux.efi --label "system1" --unicode --append-binary-args /tmp/sdb3.txt'
+ExecStart=bash -c 'echo "root=PARTUUID=$(blkid --output value --match-tag PARTUUID /dev/sdb4) console=ttyS0 systemd.tty.term.console=xterm-256color systemd.tty.columns.console=159 systemd.tty.rows.console=84 systemd.tty.term.ttyS0=xterm-256color systemd.tty.columns.ttyS0=159 systemd.tty.rows.ttyS0=84 rw" | iconv -f ascii -t ucs2 > /tmp/sdb2.txt; efibootmgr --create --disk /dev/sdb --part 2 --loader /EFI/Linux/linux.efi --label "system0" --unicode --append-binary-args /tmp/sdb2.txt'
+ExecStart=/usr/bin/systemctl poweroff
+
+[Install]
+WantedBy=multi-user.target

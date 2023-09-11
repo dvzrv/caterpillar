@@ -1,0 +1,11 @@
+#!/bin/bash
+# SPDX-FileCopyrightText: 2023 David Runge <dave@sleepmap.de>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
+# shellcheck disable=SC2154
+if [[ "$container" != "mkosi" ]]; then
+  exec mkosi-chroot "$SCRIPT" "$@"
+fi
+
+printf "Rename UKI for easier handling...\n"
+mv -v -- /efi/EFI/Linux/*.efi /efi/EFI/Linux/linux.efi

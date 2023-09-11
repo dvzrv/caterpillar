@@ -1,0 +1,13 @@
+#!/bin/bash
+# SPDX-FileCopyrightText: 2023 David Runge <dave@sleepmap.de>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
+# shellcheck disable=SC2154
+if [[ "$container" != "mkosi" ]]; then
+  exec mkosi-chroot "$SCRIPT" "$@"
+fi
+
+printf "Setup resolv.conf\n"
+ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+printf "Setup localtime\n"
+ln -sf /usr/share/zoneinfo/UTC /etc/localtime

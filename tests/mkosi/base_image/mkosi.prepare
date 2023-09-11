@@ -1,0 +1,15 @@
+#!/bin/bash
+# SPDX-FileCopyrightText: 2023 David Runge <dave@sleepmap.de>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
+# shellcheck disable=SC2154
+if [[ "$container" != "mkosi" ]]; then
+  exec mkosi-chroot "$SCRIPT" "$@"
+fi
+
+readonly user=arch
+
+printf "Add 'arch' user\n"
+/usr/bin/useradd -m -U arch
+printf "%s\n%s\n" "${user}" "${user}" | passwd "${user}"
+printf "%s ALL=(ALL) NOPASSWD: ALL\n" "${user}" > "/etc/sudoers.d/${user}"

@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: 2023 David Runge <dave@sleepmap.de>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+enable mnt.mount
+enable bootcounter.service
+enable caterpillar.service
+enable evaluate-tests.service
+enable getty@tty1.service
+enable rauc-status.service
+enable sshd.service
+disable archlinux-keyring-wkd-sync.timer

@@ -53,11 +53,28 @@ cargo build --frozen --release --all-features
 
 ## Tests
 
-Tests can be executed using
+Unit tests can be executed using
 
 ```shell
-cargo test --all
+cargo test -- --skip integration
 ```
+
+**NOTE**: The integration test setup requires quite some space (ca. 10 - 20 GiB) and can only be run serially (which takes quite long).
+
+```shell
+cargo test integration
+```
+
+The integration tests require the following tools to be available on the test system:
+
+- *guestmount* ([libguestfs](https://libguestfs.org/))
+- *guestunmount* ([libguestfs](https://libguestfs.org/))
+- *mkosi* ([mkosi](https://github.com/systemd/mkosi))
+- *openssl* ([openssl](https://www.openssl.org))
+- *pacman* ([pacman](https://archlinux.org/pacman/))
+- *qemu-img* ([QEMU](https://archlinux.org/pacman/))
+- *qemu-system-x86_64* ([QEMU](https://archlinux.org/pacman/))
+- *rauc* ([RAUC](https://rauc.io))
 
 ## License
 

@@ -7,6 +7,6 @@ set -euxo pipefail
 
 cargo fmt -- --check
 cargo clippy --all -- -D warnings
-cargo test --all
+cargo test -- --skip integration
 codespell
 reuse lint

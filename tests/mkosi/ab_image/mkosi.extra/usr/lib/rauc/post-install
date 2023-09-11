@@ -1,0 +1,57 @@
+#!/bin/bash
+#
+# SPDX-FileCopyrightText: 2023 David Runge <dave@sleepmap.de>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#
+# This post-install handler adjusts labels and UUIDs after updating.
+# It applies to scenarios in which btrfs is used as root filesystem, which can only be handled using a RAUC slot type "raw".
+# The modifications for btrfs are necessary, as otherwise two partitions will potentially have the same UUIDs after
+# update, which leads to a filesystem error upon reboot (btrfs generation error).
+
+set -eu
+
+printf "Adjusting partitions after installation of update...\n"
+
+for i in $RAUC_TARGET_SLOTS; do
+  eval RAUC_SLOT_DEVICE=\$"RAUC_SLOT_DEVICE_${i}"
+  eval RAUC_SLOT_BOOTNAME=\$"RAUC_SLOT_BOOTNAME_${i}"
+  eval RAUC_SLOT_CLASS=\$"RAUC_SLOT_CLASS_${i}"
+  eval RAUC_SLOT_TYPE=\$"RAUC_SLOT_TYPE_${i}"
+
+  case $RAUC_SLOT_BOOTNAME in
+    system0)
+      if [[ "$RAUC_SLOT_TYPE" == raw ]]; then
+        printf "Set new (random) UUID for updated raw (btrfs) partition %s\n" "$RAUC_SLOT_DEVICE"
+        btrfstune -fu "$RAUC_SLOT_DEVICE"
+      fi
+
+      case $RAUC_SLOT_CLASS in
+        efi)
+          printf "Set new label for updated EFI partition %s\n" "$RAUC_SLOT_DEVICE"
+          fatlabel "$RAUC_SLOT_DEVICE" 'ESP_A' 
+        ;;
+        rootfs)
+          printf "Set new label for updated (btrfs) rootfs partition %s\n" "$RAUC_SLOT_DEVICE"
+          btrfs filesystem label "$RAUC_SLOT_DEVICE" 'root_b'
+        ;;
+      esac
+    ;;
+    system1)
+      if [[ "$RAUC_SLOT_TYPE" == raw ]]; then
+        printf "Set new (random) UUID for updated raw (btrfs) partition %s\n" "$RAUC_SLOT_DEVICE"
+        btrfstune -fu "$RAUC_SLOT_DEVICE"
+      fi
+
+      case $RAUC_SLOT_CLASS in
+        efi)
+          printf "Set new label for updated EFI partition %s\n" "$RAUC_SLOT_DEVICE"
+          fatlabel "$RAUC_SLOT_DEVICE" 'ESP_B' 
+        ;;
+        rootfs)
+          printf "Set new label for updated (btrfs) rootfs partition %s\n" "$RAUC_SLOT_DEVICE"
+          btrfs filesystem label "$RAUC_SLOT_DEVICE" 'root_b'
+        ;;
+      esac
+    ;;
+  esac
+done
