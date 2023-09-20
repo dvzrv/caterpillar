@@ -3,6 +3,9 @@
 
 [Unit]
 After=evaluate-tests.service mnt.mount
+ConditionPathExists=/usr/share/dbus-1/system-services/de.pengutronix.rauc.service
+ConditionPathExists=/usr/share/dbus-1/system-services/org.freedesktop.UDisks2.service
+ConditionPathExists=/usr/share/dbus-1/system-services/org.freedesktop.login1.service
 ConditionFileIsExecutable=/mnt/caterpillar
 ConditionCredential=test_environment
 Description=Update system with updates found on attached block devices
@@ -11,7 +14,11 @@ OnSuccess=reevaluate-tests.service
 Wants=evaluate-tests.service mnt.mount
 
 [Service]
+BusName=de.sleepmap.Caterpillar
 ExecStart=/mnt/caterpillar
+RuntimeDirectory=caterpillar
+Type=dbus
 
 [Install]
+Alias=dbus-de.sleepmap.Caterpillar.service
 WantedBy=multi-user.target

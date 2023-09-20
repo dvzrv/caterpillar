@@ -7,6 +7,8 @@ use std::string::FromUtf8Error;
 
 use config::ConfigError;
 
+use crate::dbus::State;
+
 /// An error that could occur when caterpillar runs
 #[derive(Debug, thiserror::Error)]
 #[non_exhaustive]
@@ -32,6 +34,12 @@ pub enum Error {
     /// A problem with dbus
     #[error("A problem occurred while communicating over dbus: {0}")]
     Dbus(zbus::Error),
+    /// A problem with internal dbus
+    #[error("A problem occurred while communicating over dbus internally: {0}")]
+    DbusInternal(zbus::fdo::Error),
+    /// A problem with communicating state between threads
+    #[error("An internal error occurred communicating between threads over channels: {0}")]
+    StateChannel(tokio::sync::mpsc::error::SendError<State>),
     /// A file issue
     #[error("An error occurred reading or writing a file: {0}")]
     File(io::Error),
@@ -64,6 +72,24 @@ pub enum Error {
     /// Installing an update bundle failed
     #[error("Update failed: {0}")]
     UpdateFailed(String),
+    #[error("Caterpillar is in wrong state: {0}")]
+    WrongState(String),
+    #[error("Failed initializing: {0}")]
+    Init(String),
+    #[error("An error occurred: {0}")]
+    Default(String),
+}
+
+impl From<tokio::sync::mpsc::error::SendError<State>> for Error {
+    fn from(value: tokio::sync::mpsc::error::SendError<State>) -> Self {
+        Error::StateChannel(value)
+    }
+}
+
+impl From<zbus::fdo::Error> for Error {
+    fn from(value: zbus::fdo::Error) -> Self {
+        Error::DbusInternal(value)
+    }
 }
 
 impl From<FromUtf8Error> for Error {

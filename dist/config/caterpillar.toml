@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: 2023 David Runge <dave@sleepmap.de>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
+# This configuration file documents the built-in defaults for caterpillar
+
+# Run non-interactively on first start.
+# This automatically searches for an update, installs a matching update if found and reboots.
+autorun = true
+
+# The file extension to search for at the top-level or in an override_dir on a mounted filesystem.
+bundle_extension = "raucb"
+
+# The regular expression used to match for block devices discovered by udisks2 over D-Bus.
+device_regex = "^/org/freedesktop/UDisks2/block_devices/sd[a-z]{1}[1-9]{1}[0-9]*?$"
+
+# The name of a directory in which override updates are searched for.
+# Valid updates in this directory have precedence over those found in the top-level filesystem.
+# This is useful for downgrade scenarios.
+override_dir = "override"

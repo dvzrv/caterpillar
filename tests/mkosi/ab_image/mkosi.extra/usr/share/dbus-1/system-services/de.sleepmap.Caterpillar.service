@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: 2023 David Runge <dave@sleepmap.de>
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
+[D-BUS Service]
+Name=de.sleepmap.caterpillar
+Exec=/mnt/caterpillar
+User=root
+SystemdService=caterpillar.service

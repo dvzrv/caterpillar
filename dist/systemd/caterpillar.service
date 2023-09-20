@@ -4,10 +4,14 @@
 [Unit]
 ConditionPathExists=/usr/share/dbus-1/system-services/de.pengutronix.rauc.service
 ConditionPathExists=/usr/share/dbus-1/system-services/org.freedesktop.UDisks2.service
+ConditionPathExists=/usr/share/dbus-1/system-services/org.freedesktop.login1.service
 Description=Search and install system updates
 
 [Service]
+BusName=de.sleepmap.Caterpillar
 ExecStart=/usr/bin/caterpillar
+Type=dbus
 
 [Install]
+Alias=dbus-de.sleepmap.Caterpillar.service
 WantedBy=multi-user.target

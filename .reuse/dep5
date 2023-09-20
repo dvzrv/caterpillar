@@ -10,3 +10,7 @@ License: CC0-1.0
 Files: docs/overview.dot docs/overview.svg
 Copyright: 2023 David Runge <dave@sleepmap.de>
 License: CC-BY-SA-4.0
+
+Files: dist/dbus/de.sleepmap.Caterpillar.conf dist/dbus/de.sleepmap.Caterpillar.xml tests/mkosi/ab_image/mkosi.extra/usr/share/dbus-1/system.d/de.sleepmap.Caterpillar.conf
+Copyright: 2023 David Runge <dave@sleepmap.de>
+License: LGPL-3.0-or-later

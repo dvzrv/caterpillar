@@ -4,13 +4,15 @@ use config::{Config, ConfigError, File};
 
 pub const DEVICE_REGEX: &str = "^/org/freedesktop/UDisks2/block_devices/sd[a-z]{1}[1-9]{1}[0-9]*?$";
 
+/// Read the configuration for the application
+///
+/// This uses built-in defaults, which can be overridden with an optional configuration file found in /etc/caterpillar/caterpillar.toml
 pub async fn read_config() -> Result<Config, ConfigError> {
     Config::builder()
-        // by default we want to match any block device
+        .set_default("autorun", true)?
         .set_default("bundle_extension", "raucb")?
         .set_default("device_regex", DEVICE_REGEX)?
         .set_default("override_dir", "override")?
-        .set_default("reboot", true)?
         .add_source(File::with_name("/etc/caterpillar/caterpillar").required(false))
         .add_source(config::Environment::with_prefix("CATERPILLAR"))
         .build()
